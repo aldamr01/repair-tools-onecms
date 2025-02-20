@@ -24,12 +24,15 @@ func main() {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
+		LogError(err)
+		return
 	}
 
 	DSN := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", os.Getenv("DB_HOST"), os.Getenv("DB_PORT"), os.Getenv("DB_USERNAME"), os.Getenv("DB_PASS"), os.Getenv("DB_NAME"))
 	dbClient, err := GetDBConnection(DSN)
 	if err != nil {
 		fmt.Println("❌ ERROR connecting to database")
+		LogError(err)
 		panic(err)
 	}
 	defer dbClient.Close()
@@ -38,6 +41,7 @@ func main() {
 	osClient, err := GetOSConnection(os.Getenv("OS_HOST"), os.Getenv("OS_USERNAME"), os.Getenv("OS_PASSWORD"))
 	if err != nil {
 		fmt.Println("❌ ERROR connecting to opensearch")
+		LogError(err)
 		panic(err)
 	}
 
@@ -60,6 +64,7 @@ func main() {
 		)
 		if err != nil {
 			fmt.Printf("\nGot some errors\n----------------------\n %v", err)
+			LogError(err)
 		}
 	}
 

@@ -15,8 +15,6 @@ func fixURL(ctx context.Context, onecmsDB OneCMSDB, onecmsOS OneCMSOS, startAt, 
 	}
 	fmt.Printf("✅ Got %v posts\n", len(posts))
 
-	ppppps := []map[string]interface{}{}
-
 	chunkSize, _ := strconv.Atoi(os.Getenv("POST_CHUNK_SIZE"))
 	fmt.Printf("🔁 Chunking posts into %v\n", chunkSize)
 	chunks := Chunk(posts, chunkSize)
@@ -76,9 +74,6 @@ func fixURL(ctx context.Context, onecmsDB OneCMSDB, onecmsOS OneCMSOS, startAt, 
 		fmt.Println("-----🚀-----")
 	}
 
-	fmt.Println(">>>>")
-	PrettyPrint(ppppps)
-	fmt.Println("<<<<")
 	fmt.Printf("\n🚚 UNFIXED: %v", PrettyF(unfixedPosts))
 
 	if len(unfixedPosts) > 0 {

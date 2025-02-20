@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 )
 
 func PrettyPrint(v interface{}) {
@@ -97,4 +98,29 @@ func FixURL(url, newAuthorKey string) (string, error) {
 	newURL := strings.Join(parts, "/")
 
 	return newURL, nil
+}
+
+func LogError(err error) {
+	if err == nil {
+		return
+	}
+
+	// Define the log file path
+	logFile := "error.log"
+
+	// Open file in append mode, create if not exists
+	file, fileErr := os.OpenFile(logFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if fileErr != nil {
+		fmt.Println("Failed to open log file:", fileErr)
+		return
+	}
+	defer file.Close()
+
+	// Format error with timestamp
+	logMessage := fmt.Sprintf("%s: %v\n", time.Now().Format("2006-01-02 15:04:05"), err)
+
+	// Write error message to the file
+	if _, writeErr := file.WriteString(logMessage); writeErr != nil {
+		fmt.Println("Failed to write to log file:", writeErr)
+	}
 }
