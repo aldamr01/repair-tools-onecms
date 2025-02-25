@@ -77,7 +77,7 @@ func fixURL(ctx context.Context, onecmsDB OneCMSDB, onecmsOS OneCMSOS, startAt, 
 	fmt.Printf("\n🚚 UNFIXED: %v", PrettyF(unfixedPosts))
 
 	if len(unfixedPosts) > 0 {
-		return fmt.Errorf("\n❗Few total error: %d", len(unfixedPosts))
+		return fmt.Errorf("\n❗Few total error: %d \n 🚚 UNFIXED: %v", len(unfixedPosts), PrettyF(unfixedPosts))
 	}
 
 	return nil
