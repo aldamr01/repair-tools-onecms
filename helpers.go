@@ -36,7 +36,18 @@ func Encode(data interface{}) (bytes.Buffer, error) {
 
 	return buf, nil
 }
+
 func Chunk[T any](items []T, chunkSize int) [][]T {
+	// Return empty slice for empty input
+	if len(items) == 0 {
+		return [][]T{}
+	}
+
+	// Handle zero or negative chunk size
+	if chunkSize <= 0 {
+		chunkSize = 1 // Set a safe default
+	}
+
 	var chunks [][]T
 	for i := 0; i < len(items); i += chunkSize {
 		end := i + chunkSize
@@ -72,9 +83,14 @@ func ToString(source interface{}) (string, error) {
 }
 
 func FixURL(url, newAuthorKey string) (string, error) {
+	// Check for empty URL
+	if url == "" {
+		return "", fmt.Errorf("invalid URL format")
+	}
+
 	// Find the last segment after the last "/"
 	parts := strings.Split(url, "/")
-	if len(parts) == 0 {
+	if len(parts) <= 1 {
 		return "", fmt.Errorf("invalid URL format")
 	}
 
