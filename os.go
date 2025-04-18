@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"crypto/tls"
 	"encoding/json"
 	"errors"
@@ -9,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/opensearch-project/opensearch-go"
+	"github.com/opensearch-project/opensearch-go/opensearchapi"
 
 	// _ empty import used to initilize driver
 	_ "github.com/lib/pq"
@@ -43,6 +45,7 @@ func GetOSConnection(host, username, password string) (*opensearch.Client, error
 
 type OneCMSOS interface {
 	DynamicUpdate(data interface{}, docID, index string) error
+	GetAuthorByID(authorID string) (*AuthorOS, error)
 }
 
 type oneCMSOS struct {
@@ -77,4 +80,34 @@ func (oneOS *oneCMSOS) DynamicUpdate(data interface{}, docID, index string) erro
 	}
 
 	return nil
+}
+
+func (oneOS *oneCMSOS) GetAuthorByID(authorID string) (*AuthorOS, error) {
+
+	authorIndex := "one-author-index"
+	var author *AuthorOS
+
+	osGet := opensearchapi.GetRequest{
+		Index:      authorIndex,
+		DocumentID: authorID,
+	}
+
+	getResponse, err := osGet.Do(context.Background(), oneOS.osClient)
+	if err != nil {
+		return author, err
+	}
+	defer getResponse.Body.Close()
+
+	result := AuthorGetResult{}
+	if err := json.NewDecoder(getResponse.Body).Decode(&result); err != nil {
+		return author, err
+	}
+
+	if !result.Found {
+		return nil, errors.New("post not found")
+	}
+
+	author = result.Source
+
+	return author, nil
 }

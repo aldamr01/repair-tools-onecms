@@ -66,6 +66,22 @@ func main() {
 			fmt.Printf("\nGot some errors\n----------------------\n %v", err)
 			LogError(err)
 		}
+	} else if args[1] == "fix-csc-popmama" {
+		fmt.Println("🏃🏽‍➡️ Repairing One CMS Popmama CSC...")
+		if len(args) < 4 {
+			panic("not enough argument")
+		}
+
+		err := fixCSCPopmama(
+			ctx,
+			onecmsDB,
+			onecmsOS,
+			osIndex,
+		)
+		if err != nil {
+			fmt.Printf("\nGot some errors\n----------------------\n %v", err)
+			LogError(err)
+		}
 	}
 
 	fmt.Println("\n✅ OK Done")
